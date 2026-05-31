@@ -1,0 +1,139 @@
+2026-05-31 10:24:09.423 - Application starting...
+2026-05-31 10:24:09.435 - Config not found, starting empty.
+2026-05-31 10:24:09.500 - ShyUIContext initialized successfully.
+2026-05-31 10:24:09.500 - Context created, running message loop...
+2026-05-31 10:24:50.773 - Application starting...
+2026-05-31 10:24:50.778 - Config not found, starting empty.
+2026-05-31 10:24:50.838 - Registered hotkey Ctrl+Alt+S
+2026-05-31 10:24:50.838 - Registered hotkey Ctrl+Alt+T
+2026-05-31 10:24:50.839 - ShyUIContext initialized successfully.
+2026-05-31 10:24:50.839 - Context created, running message loop...
+2026-05-31 10:43:15.750 - Application starting...
+2026-05-31 10:43:15.800 - Config not found, starting empty.
+2026-05-31 10:43:15.915 - Registered hotkey Ctrl+Alt+S
+2026-05-31 10:43:15.915 - Registered hotkey Ctrl+Alt+T
+2026-05-31 10:43:15.918 - ShyUIContext initialized successfully.
+2026-05-31 10:43:15.919 - Context created, running message loop...
+2026-05-31 10:43:15.966 - Auto-activating for maximized window: fpilot
+2026-05-31 10:43:15.971 - Restoring maximized window: fpilot
+2026-05-31 10:43:18.978 - Revealed top bar for: fpilot
+2026-05-31 10:43:19.536 - Hid top bar for: fpilot
+2026-05-31 10:43:20.235 - Revealed top bar for: fpilot
+2026-05-31 10:43:20.921 - Hid top bar for: fpilot
+2026-05-31 10:43:21.923 - Revealed top bar for: fpilot
+2026-05-31 10:43:24.664 - Hid top bar for: fpilot
+2026-05-31 10:43:27.728 - Revealed top bar for: fpilot
+2026-05-31 10:43:29.066 - Restoring maximized window: fpilot
+2026-05-31 10:43:30.146 - Hid top bar for: fpilot
+2026-05-31 10:43:38.190 - System paused: True
+2026-05-31 10:43:55.587 - System paused: False
+2026-05-31 10:43:56.093 - Auto-activating for maximized window: antigravity ide
+2026-05-31 10:43:56.098 - Restoring maximized window: antigravity ide
+2026-05-31 10:43:59.090 - Revealed top bar for: antigravity ide
+2026-05-31 10:43:59.708 - Hid top bar for: antigravity ide
+2026-05-31 10:44:01.583 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:02.120 - Hid top bar for: antigravity ide
+2026-05-31 10:44:03.038 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:03.476 - Hid top bar for: antigravity ide
+2026-05-31 10:44:04.352 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:05.170 - Hid top bar for: antigravity ide
+2026-05-31 10:44:08.492 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:18.889 - Hid top bar for: antigravity ide
+2026-05-31 10:44:22.634 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:23.103 - Hid top bar for: antigravity ide
+2026-05-31 10:44:23.599 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:23.911 - Hid top bar for: antigravity ide
+2026-05-31 10:44:24.351 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:24.757 - Hid top bar for: antigravity ide
+2026-05-31 10:44:25.317 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:25.627 - Hid top bar for: antigravity ide
+2026-05-31 10:44:26.286 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:26.537 - Hid top bar for: antigravity ide
+2026-05-31 10:44:26.975 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:27.226 - Hid top bar for: antigravity ide
+2026-05-31 10:44:27.662 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:27.909 - Hid top bar for: antigravity ide
+2026-05-31 10:44:28.352 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:28.628 - Hid top bar for: antigravity ide
+2026-05-31 10:44:29.132 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:29.412 - Hid top bar for: antigravity ide
+2026-05-31 10:44:29.816 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:30.040 - Hid top bar for: antigravity ide
+2026-05-31 10:44:31.695 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:31.975 - Hid top bar for: antigravity ide
+2026-05-31 10:44:32.380 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:32.659 - Hid top bar for: antigravity ide
+2026-05-31 10:44:33.132 - Revealed top bar for: antigravity ide
+2026-05-31 10:44:33.380 - Hid top bar for: antigravity ide
+2026-05-31 10:44:46.578 - System paused: True
+2026-05-31 10:45:31.039 - System paused: False
+2026-05-31 10:45:31.808 - Auto-activating for maximized window: antigravity ide
+2026-05-31 10:45:31.809 - Restoring maximized window: antigravity ide
+2026-05-31 10:45:32.427 - Revealed top bar for: antigravity ide
+2026-05-31 10:45:32.991 - Hid top bar for: antigravity ide
+2026-05-31 10:45:33.614 - Revealed top bar for: antigravity ide
+2026-05-31 10:45:34.241 - Hid top bar for: antigravity ide
+2026-05-31 10:45:35.019 - Revealed top bar for: antigravity ide
+2026-05-31 10:45:35.520 - Hid top bar for: antigravity ide
+2026-05-31 10:45:37.710 - Revealed top bar for: antigravity ide
+2026-05-31 10:45:38.737 - Hid top bar for: antigravity ide
+2026-05-31 10:45:39.019 - Revealed top bar for: antigravity ide
+2026-05-31 10:45:40.365 - Hid top bar for: antigravity ide
+2026-05-31 10:45:41.144 - Revealed top bar for: antigravity ide
+2026-05-31 10:45:43.990 - Hid top bar for: antigravity ide
+2026-05-31 10:45:50.739 - Revealed top bar for: antigravity ide
+2026-05-31 10:45:52.145 - Auto-activating for maximized window: fpilot
+2026-05-31 10:45:52.146 - Restoring maximized window: fpilot
+2026-05-31 10:45:54.269 - Revealed top bar for: fpilot
+2026-05-31 10:45:54.900 - Hid top bar for: fpilot
+2026-05-31 10:46:00.865 - Revealed top bar for: fpilot
+2026-05-31 10:46:02.007 - Auto-activating for maximized window: thorium
+2026-05-31 10:46:02.009 - Restoring maximized window: thorium
+2026-05-31 10:46:04.116 - Revealed top bar for: thorium
+2026-05-31 10:46:04.706 - Hid top bar for: thorium
+2026-05-31 10:46:05.178 - Revealed top bar for: thorium
+2026-05-31 10:46:05.675 - Hid top bar for: thorium
+2026-05-31 10:46:06.364 - Revealed top bar for: thorium
+2026-05-31 10:46:06.991 - Hid top bar for: thorium
+2026-05-31 10:46:07.489 - Revealed top bar for: thorium
+2026-05-31 10:46:07.866 - Hid top bar for: thorium
+2026-05-31 10:46:08.519 - Revealed top bar for: thorium
+2026-05-31 10:46:09.773 - Hid top bar for: thorium
+2026-05-31 10:46:10.240 - Revealed top bar for: thorium
+2026-05-31 10:46:10.835 - Hid top bar for: thorium
+2026-05-31 10:46:11.366 - Revealed top bar for: thorium
+2026-05-31 10:46:12.057 - Hid top bar for: thorium
+2026-05-31 10:46:12.487 - Revealed top bar for: thorium
+2026-05-31 10:46:13.957 - Hid top bar for: thorium
+2026-05-31 10:46:14.393 - Revealed top bar for: thorium
+2026-05-31 10:46:14.894 - Hid top bar for: thorium
+2026-05-31 10:46:22.146 - Auto-activating for maximized window: codex
+2026-05-31 10:46:22.148 - Restoring maximized window: codex
+2026-05-31 10:46:36.897 - Revealed top bar for: codex
+2026-05-31 10:46:51.308 - Hid top bar for: codex
+2026-05-31 10:46:54.083 - Revealed top bar for: codex
+2026-05-31 10:46:55.333 - Hid top bar for: codex
+2026-05-31 10:46:55.863 - Revealed top bar for: codex
+2026-05-31 10:46:57.385 - Hid top bar for: codex
+2026-05-31 10:47:08.364 - Hid top bar for: antigravity ide
+2026-05-31 10:47:16.511 - Revealed top bar for: antigravity ide
+2026-05-31 10:47:25.788 - Auto-activating for maximized window: thorium
+2026-05-31 10:47:25.790 - Restoring maximized window: thorium
+2026-05-31 10:47:27.247 - Revealed top bar for: thorium
+2026-05-31 10:47:28.154 - Restoring maximized window: thorium
+2026-05-31 10:47:28.558 - Hid top bar for: thorium
+2026-05-31 10:47:34.628 - Revealed top bar for: thorium
+2026-05-31 10:47:35.952 - Restoring maximized window: thorium
+2026-05-31 10:47:36.138 - Hid top bar for: thorium
+2026-05-31 10:47:41.847 - Auto-activating for maximized window: thorium
+2026-05-31 10:47:41.849 - Restoring maximized window: thorium
+2026-05-31 10:47:56.189 - System paused: True
+2026-05-31 10:47:58.190 - System paused: False
+2026-05-31 10:47:58.203 - Auto-activating for maximized window: fpilot
+2026-05-31 10:47:58.204 - Restoring maximized window: fpilot
+2026-05-31 10:48:02.824 - Auto-activating for maximized window: thorium
+2026-05-31 10:48:02.825 - Restoring maximized window: thorium
+2026-05-31 10:48:25.458 - Auto-activating for maximized window: antigravity ide
+2026-05-31 10:48:25.459 - Restoring maximized window: antigravity ide
+2026-05-31 10:48:39.089 - Revealed top bar for: antigravity ide
+2026-05-31 10:48:42.700 - System paused: True
