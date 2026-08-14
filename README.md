@@ -1,9 +1,21 @@
 # Shy UI — Window Title Bar Auto-Hider
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Shy UI is a lightweight Windows tray application that automatically hides the
 title bar of maximized windows, giving you a cleaner fullscreen-style view
 while keeping the window fully functional. Move your mouse to the top 2px of
 the screen to temporarily reveal the title bar.
+
+No SDK required — builds with the .NET Framework compiler bundled with Windows.
+
+## Documentation
+
+- [Changelog](CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security](SECURITY.md)
+- [License](LICENSE)
 
 ## Features
 
