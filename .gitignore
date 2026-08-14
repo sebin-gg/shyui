@@ -1,0 +1,11 @@
+# Build artifacts
+ShyUI.exe
+*.exe
+
+# Runtime files
+shyui_log.txt
+shyui_config.txt
+
+# IDE
+.vs/
+*.user
