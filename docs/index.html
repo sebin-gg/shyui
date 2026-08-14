@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shy UI — Window Title Bar Auto-Hider</title>
+<meta name="description" content="A lightweight Windows tray app that hides the title bar of maximized windows. Move your mouse to the top of the screen to reveal it.">
+<style>
+  :root { color-scheme: light dark; --bg:#0f1115; --card:#181c24; --fg:#e6e9ef; --muted:#9aa4b2; --accent:#4f8cff; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 48px 24px; }
+  header { text-align: center; margin-bottom: 40px; }
+  header h1 { font-size: 2.4rem; letter-spacing: -0.02em; }
+  header p.tagline { color: var(--muted); margin-top: 8px; font-size: 1.05rem; }
+  .badge { display: inline-block; margin-top: 16px; padding: 4px 12px; border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; font-size: .85rem; }
+  h2 { margin: 32px 0 12px; font-size: 1.3rem; }
+  .card { background: var(--card); border: 1px solid #2a2f3a; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  ul { list-style: none; }
+  li { padding: 6px 0; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #2a2f3a; }
+  th { color: var(--muted); font-weight: 600; }
+  kbd { background: #242a36; border: 1px solid #3a4252; border-radius: 6px; padding: 2px 8px; font-family: inherit; font-size: .9em; }
+  code { background: #242a36; padding: 2px 6px; border-radius: 6px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  footer { margin-top: 48px; text-align: center; color: var(--muted); font-size: .85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Shy UI</h1>
+    <p class="tagline">A lightweight Windows tray app that hides the title bar of maximized windows — a cleaner fullscreen-style view that stays fully functional.</p>
+    <span class="badge">Windows · C# · WinForms</span>
+  </header>
+
+  <div class="card">
+    <h2>How it works</h2>
+    <ul>
+      <li><strong>Auto-Shy</strong> — any window you maximize is managed automatically; the title bar slides off-screen.</li>
+      <li><strong>Reveal on hover</strong> — move the mouse to the top 2px of the screen to peek the title bar.</li>
+      <li><strong>Per-app control</strong> — add or remove specific apps from the managed list with a hotkey.</li>
+      <li><strong>Pause &amp; resume</strong> — restore every window to its normal state in one keypress.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Hotkeys</h2>
+    <table>
+      <tr><th>Action</th><th>Key</th></tr>
+      <tr><td>Pause / Resume all</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd></td></tr>
+      <tr><td>Add / remove focused app</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>T</kbd></td></tr>
+      <tr><td>Reveal hidden title bar</td><td>Mouse to top 2px of screen</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Build</h2>
+    <p>No SDK required — uses the .NET Framework compiler bundled with Windows:</p>
+    <pre><code>powershell -ExecutionPolicy Bypass -File build.ps1</code></pre>
+  </div>
+
+  <p style="text-align:center;margin-top:8px;"><a href="https://github.com/sebin-gg/shyui">View source on GitHub</a></p>
+
+  <footer>
+    Shy UI · MIT License · built by Sebin Mathew
+  </footer>
+</div>
+</body>
+</html>
