@@ -61,12 +61,14 @@ namespace ShyUI
         private bool isSystemPaused = false;
         private Dictionary<IntPtr, bool> windowRevealedState;
         private HashSet<IntPtr> autoManagedWindows;
+        private Dictionary<IntPtr, long> originalStyles;
+        
+        private string[] customFrameBlacklist = new string[] { "code", "msedge", "thorium", "antigravity", "chrome", "discord" };
 
         // Hotkey IDs
         private const int HOTKEY_PAUSE = 1;
         private const int HOTKEY_TOGGLE_APP = 2;
 
-        // Hidden form to catch hotkeys
         private HotkeyForm hotkeyForm;
 
         public ShyUIContext()
@@ -75,6 +77,7 @@ namespace ShyUI
             appConfigs = new Dictionary<string, int>();
             windowRevealedState = new Dictionary<IntPtr, bool>();
             autoManagedWindows = new HashSet<IntPtr>();
+            originalStyles = new Dictionary<IntPtr, long>();
 
             LoadConfig();
 
@@ -97,10 +100,10 @@ namespace ShyUI
             UpdateTrayIcon();
 
             hotkeyForm = new HotkeyForm(this);
-            hotkeyForm.Show(); // It's invisible
+            hotkeyForm.Show();
 
             loopTimer = new Timer();
-            loopTimer.Interval = 20; // 50fps
+            loopTimer.Interval = 20; 
             loopTimer.Tick += LoopTimer_Tick;
             loopTimer.Start();
             
@@ -123,11 +126,6 @@ namespace ShyUI
                         appConfigs[parts[0].Trim().ToLower()] = height;
                     }
                 }
-                Logger.Log("Config loaded. Apps count: " + appConfigs.Count);
-            }
-            else
-            {
-                Logger.Log("Config not found, starting empty.");
             }
         }
 
@@ -137,7 +135,6 @@ namespace ShyUI
             {
                 var lines = appConfigs.Select(kv => string.Format("{0}={1}", kv.Key, kv.Value)).ToList();
                 File.WriteAllLines(configPath, lines);
-                Logger.Log("Config saved.");
             }
             catch (Exception ex)
             {
@@ -175,13 +172,12 @@ namespace ShyUI
 
             if (isSystemPaused)
             {
-                // Restore all managed windows to normal maximized state
-                foreach (IntPtr handle in windowRevealedState.Keys.ToList())
+                foreach (IntPtr handle in autoManagedWindows.ToList())
                 {
-                    Win32.ShowWindow(handle, Win32.SW_SHOWMAXIMIZED);
+                    RestoreWindow(handle);
                 }
                 windowRevealedState.Clear();
-                autoManagedWindows.Clear(); // They will auto-re-add when unpaused if still maximized
+                autoManagedWindows.Clear();
             }
         }
 
@@ -191,29 +187,37 @@ namespace ShyUI
             trayMenu.Items[1].Text = isSystemPaused ? "Resume (Ctrl+Alt+S)" : "Pause (Ctrl+Alt+S)";
         }
 
+        private void RestoreWindow(IntPtr hWnd)
+        {
+            if (originalStyles.ContainsKey(hWnd))
+            {
+                long style = originalStyles[hWnd];
+                Win32.SetWindowLongPtr(hWnd, Win32.GWL_STYLE, new IntPtr(style));
+                Win32.SetWindowPos(hWnd, IntPtr.Zero, 0, 0, 0, 0, 
+                    Win32.SWP_FRAMECHANGED | Win32.SWP_NOMOVE | Win32.SWP_NOSIZE | Win32.SWP_NOZORDER | Win32.SWP_NOACTIVATE);
+                originalStyles.Remove(hWnd);
+            }
+            else
+            {
+                Win32.ShowWindow(hWnd, Win32.SW_SHOWMAXIMIZED);
+            }
+        }
+
         public void ToggleCurrentApp()
         {
             IntPtr hWnd = Win32.GetForegroundWindow();
-            if (hWnd == IntPtr.Zero) 
-            {
-                Logger.Log("Toggle failed: No foreground window.");
-                return;
-            }
+            if (hWnd == IntPtr.Zero) return;
 
             string procName = GetProcessName(hWnd);
-            if (string.IsNullOrEmpty(procName))
-            {
-                Logger.Log("Toggle failed: Could not read process name (admin rights?).");
-                return;
-            }
+            if (string.IsNullOrEmpty(procName)) return;
             procName = procName.ToLower();
 
             if (autoManagedWindows.Contains(hWnd))
             {
+                RestoreWindow(hWnd);
                 autoManagedWindows.Remove(hWnd);
-                Win32.ShowWindow(hWnd, Win32.SW_SHOWMAXIMIZED);
                 trayIcon.BalloonTipTitle = "Shy UI";
-                trayIcon.BalloonTipText = string.Format("Removed window from Auto-Shy UI");
+                trayIcon.BalloonTipText = "Removed window from Auto-Shy UI";
                 trayIcon.ShowBalloonTip(2000);
                 Logger.Log("Removed auto-managed window: " + procName);
                 return;
@@ -222,7 +226,7 @@ namespace ShyUI
             if (appConfigs.ContainsKey(procName))
             {
                 appConfigs.Remove(procName);
-                Win32.ShowWindow(hWnd, Win32.SW_SHOWMAXIMIZED);
+                RestoreWindow(hWnd);
                 trayIcon.BalloonTipTitle = "Shy UI";
                 trayIcon.BalloonTipText = string.Format("Removed {0} from Shy UI", procName);
                 trayIcon.ShowBalloonTip(2000);
@@ -245,6 +249,10 @@ namespace ShyUI
                                          "Exit Shy UI", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
+                foreach (IntPtr handle in autoManagedWindows.ToList())
+                {
+                    RestoreWindow(handle);
+                }
                 Logger.Log("User requested exit.");
                 trayIcon.Visible = false;
                 Application.Exit();
@@ -276,13 +284,11 @@ namespace ShyUI
                         {
                             key.DeleteValue("ShyUI", false);
                             ((ToolStripMenuItem)sender).Checked = false;
-                            Logger.Log("Removed from startup.");
                         }
                         else
                         {
                             key.SetValue("ShyUI", "\"" + Application.ExecutablePath + "\"");
                             ((ToolStripMenuItem)sender).Checked = true;
-                            Logger.Log("Added to startup.");
                         }
                     }
                 }
@@ -290,7 +296,6 @@ namespace ShyUI
             catch (Exception ex)
             {
                 MessageBox.Show("Failed to change startup settings: " + ex.Message, "Shy UI");
-                Logger.Log("Startup fail: " + ex.Message);
             }
         }
 
@@ -310,13 +315,21 @@ namespace ShyUI
             if (!isInConfig) topBarHeight = defaultTopBarHeight;
 
             bool isMaximized = IsMaximized(hWnd);
+            bool isManaged = autoManagedWindows.Contains(hWnd);
 
-            if (isInConfig || isMaximized || autoManagedWindows.Contains(hWnd))
+            if (isInConfig || isMaximized || isManaged)
             {
-                if (isMaximized && !isInConfig && !autoManagedWindows.Contains(hWnd))
+                if (isMaximized && !isManaged && !isInConfig)
                 {
                     Logger.Log("Auto-activating for maximized window: " + procName);
                     autoManagedWindows.Add(hWnd);
+                    
+                    bool isCustomFrame = customFrameBlacklist.Contains(procName);
+                    if (!isCustomFrame)
+                    {
+                        long currentStyle = (long)Win32.GetWindowLongPtr(hWnd, Win32.GWL_STYLE);
+                        originalStyles[hWnd] = currentStyle;
+                    }
                 }
 
                 ManageWindow(hWnd, topBarHeight, procName);
@@ -325,15 +338,10 @@ namespace ShyUI
 
         private void ManageWindow(IntPtr hWnd, int topBarHeight, string procName)
         {
-            var screen = Screen.FromHandle(hWnd);
-            var workArea = screen.WorkingArea; // Auto adjusts for taskbar!
+            bool isCustomFrame = customFrameBlacklist.Contains(procName);
 
-            // Restore if maximized
-            if (IsMaximized(hWnd))
-            {
-                Logger.Log("Restoring maximized window: " + procName);
-                Win32.ShowWindow(hWnd, Win32.SW_RESTORE);
-            }
+            var screen = Screen.FromHandle(hWnd);
+            var workArea = screen.WorkingArea; 
 
             Win32.POINT p;
             Win32.GetCursorPos(out p);
@@ -342,41 +350,60 @@ namespace ShyUI
             if (windowRevealedState.ContainsKey(hWnd))
                 isRevealed = windowRevealedState[hWnd];
 
-            // Logic for revealing/hiding
             if (!isRevealed)
             {
-                // If mouse touches top 2 pixels of the screen bounds
                 if (p.Y <= screen.Bounds.Y + 2)
                 {
                     isRevealed = true;
-                    Logger.Log("Revealed top bar for: " + procName);
                 }
             }
             else
             {
-                // If mouse moves below the top bar area
-                if (p.Y > workArea.Y + topBarHeight)
+                if (p.Y > workArea.Y + topBarHeight + 15) // Hysteresis 15px
                 {
                     isRevealed = false;
-                    Logger.Log("Hid top bar for: " + procName);
                 }
             }
 
             windowRevealedState[hWnd] = isRevealed;
 
-            int targetY = isRevealed ? workArea.Y : workArea.Y - topBarHeight;
-            int targetHeight = workArea.Height + topBarHeight;
-
-            Win32.RECT rect;
-            Win32.GetWindowRect(hWnd, out rect);
-            
-            // Only move if bounds are wrong to avoid flickering
-            if (rect.Left != workArea.X || rect.Top != targetY || 
-                (rect.Right - rect.Left) != workArea.Width || 
-                (rect.Bottom - rect.Top) != targetHeight)
+            if (isCustomFrame)
             {
-                Win32.SetWindowPos(hWnd, IntPtr.Zero, workArea.X, targetY, workArea.Width, targetHeight, 
-                    Win32.SWP_NOACTIVATE | Win32.SWP_NOZORDER);
+                if (IsMaximized(hWnd))
+                {
+                    Win32.ShowWindow(hWnd, Win32.SW_RESTORE);
+                }
+
+                int targetY = isRevealed ? workArea.Y : workArea.Y - topBarHeight;
+                int targetHeight = workArea.Height + topBarHeight;
+
+                Win32.RECT rect;
+                Win32.GetWindowRect(hWnd, out rect);
+                
+                if (rect.Left != workArea.X || rect.Top != targetY || 
+                    (rect.Right - rect.Left) != workArea.Width || 
+                    (rect.Bottom - rect.Top) != targetHeight)
+                {
+                    Win32.SetWindowPos(hWnd, IntPtr.Zero, workArea.X, targetY, workArea.Width, targetHeight, 
+                        Win32.SWP_NOACTIVATE | Win32.SWP_NOZORDER);
+                }
+            }
+            else
+            {
+                if (!originalStyles.ContainsKey(hWnd)) return;
+                
+                long originalStyle = originalStyles[hWnd];
+                long hiddenStyle = originalStyle & ~Win32.WS_CAPTION & ~Win32.WS_THICKFRAME;
+                long targetStyle = isRevealed ? originalStyle : hiddenStyle;
+                
+                long currentStyle = (long)Win32.GetWindowLongPtr(hWnd, Win32.GWL_STYLE);
+                
+                if (currentStyle != targetStyle)
+                {
+                    Win32.SetWindowLongPtr(hWnd, Win32.GWL_STYLE, new IntPtr(targetStyle));
+                    Win32.SetWindowPos(hWnd, IntPtr.Zero, 0, 0, 0, 0, 
+                        Win32.SWP_FRAMECHANGED | Win32.SWP_NOMOVE | Win32.SWP_NOSIZE | Win32.SWP_NOZORDER | Win32.SWP_NOACTIVATE);
+                }
             }
         }
 
@@ -402,7 +429,6 @@ namespace ShyUI
             Win32.GetWindowThreadProcessId(hWnd, out pid);
             if (pid == 0) return null;
             
-            // Attempt 1: Safe native way without requiring handle read rights
             IntPtr hProcess = Win32.OpenProcess(Win32.PROCESS_QUERY_LIMITED_INFORMATION, false, pid);
             if (hProcess != IntPtr.Zero)
             {
@@ -421,7 +447,6 @@ namespace ShyUI
                 }
             }
             
-            // Attempt 2: Managed way (often fails for Admin apps)
             try
             {
                 var proc = System.Diagnostics.Process.GetProcessById((int)pid);
@@ -446,7 +471,6 @@ namespace ShyUI
         }
     }
 
-    // Hidden form just to receive Windows messages for global hotkeys
     public class HotkeyForm : Form
     {
         private ShyUIContext context;
@@ -463,18 +487,10 @@ namespace ShyUI
             this.FormBorderStyle = FormBorderStyle.None;
             this.ShowInTaskbar = false;
 
-            // Force handle creation for hotkey registration
             IntPtr h = this.Handle;
 
-            if (!Win32.RegisterHotKey(this.Handle, HOTKEY_PAUSE, MOD_CONTROL | MOD_ALT, VK_S))
-                Logger.Log("Failed to register hotkey Ctrl+Alt+S");
-            else
-                Logger.Log("Registered hotkey Ctrl+Alt+S");
-
-            if (!Win32.RegisterHotKey(this.Handle, HOTKEY_TOGGLE_APP, MOD_CONTROL | MOD_ALT, VK_T))
-                Logger.Log("Failed to register hotkey Ctrl+Alt+T");
-            else
-                Logger.Log("Registered hotkey Ctrl+Alt+T");
+            Win32.RegisterHotKey(this.Handle, HOTKEY_PAUSE, MOD_CONTROL | MOD_ALT, VK_S);
+            Win32.RegisterHotKey(this.Handle, HOTKEY_TOGGLE_APP, MOD_CONTROL | MOD_ALT, VK_T);
 
             this.FormClosing += (s, e) => {
                 Win32.UnregisterHotKey(this.Handle, HOTKEY_PAUSE);
@@ -484,12 +500,12 @@ namespace ShyUI
 
         protected override void SetVisibleCore(bool value)
         {
-            base.SetVisibleCore(false); // Keep completely hidden
+            base.SetVisibleCore(false);
         }
 
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == 0x0312) // WM_HOTKEY
+            if (m.Msg == 0x0312) 
             {
                 int id = m.WParam.ToInt32();
                 if (id == HOTKEY_PAUSE)
@@ -564,7 +580,6 @@ namespace ShyUI
         }
     }
 
-    // Win32 API Definitions
     public static class Win32
     {
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -610,11 +625,42 @@ namespace ShyUI
         [DllImport("user32.dll")]
         public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
+        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
+        private static extern IntPtr GetWindowLongPtr32(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr")]
+        private static extern IntPtr GetWindowLongPtr64(IntPtr hWnd, int nIndex);
+
+        public static IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex)
+        {
+            if (IntPtr.Size == 8) return GetWindowLongPtr64(hWnd, nIndex);
+            else return GetWindowLongPtr32(hWnd, nIndex);
+        }
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
+        private static extern int SetWindowLong32(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
+        private static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+        public static IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
+        {
+            if (IntPtr.Size == 8) return SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
+            else return new IntPtr(SetWindowLong32(hWnd, nIndex, dwNewLong.ToInt32()));
+        }
+
+        public const int GWL_STYLE = -16;
+        public const long WS_CAPTION = 0x00C00000L;
+        public const long WS_THICKFRAME = 0x00040000L;
+
         public const int SW_SHOWMAXIMIZED = 3;
         public const int SW_SHOWMINIMIZED = 2;
         public const int SW_RESTORE = 9;
         public const uint SWP_NOACTIVATE = 0x0010;
         public const uint SWP_NOZORDER = 0x0004;
+        public const uint SWP_FRAMECHANGED = 0x0020;
+        public const uint SWP_NOMOVE = 0x0002;
+        public const uint SWP_NOSIZE = 0x0001;
 
         [StructLayout(LayoutKind.Sequential)]
         public struct POINT
