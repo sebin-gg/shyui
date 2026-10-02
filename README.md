@@ -138,3 +138,7 @@ git commit --no-verify -m "emergency commit"
 ```
 
 > ⚠️ Only use `--no-verify` in emergency situations. Regular commits should always be scanned.
+
+---
+
+Built by [Sebin Mathew](https://sebin-gg.vercel.app) — full-stack developer and software engineer — more projects, resume, and contact on the [portfolio](https://sebin-gg.vercel.app).
